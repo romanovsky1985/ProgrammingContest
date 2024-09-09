@@ -1,12 +1,17 @@
 #include "RomanFraction.h"
 
+/*
+ * В конструкторе читаем переданную строку с римской цифрой, переводим
+ * числитель и знаменатель в десятичные числа и сразу сокращаем их
+ * найдя НОД, остается только вывести число по требованию
+ */
+
 RomanFraction::RomanFraction(const std::string& strFraction) {
   int i = 0;
   while (i < strFraction.size() && strFraction[i] != '/')
     ++i;
   int gcd = numerator = toInt(std::string(strFraction, 0, i));
-  int b = toInt(std::string(strFraction, i, strFraction.size() - i));
-  b = denominator = (b == 0 ? 1 : b);
+  int b = denominator = toInt(std::string(strFraction, i, strFraction.size() - i));
   while (gcd != b)
     if (gcd > b)
       gcd = gcd - b;
@@ -16,6 +21,10 @@ RomanFraction::RomanFraction(const std::string& strFraction) {
   denominator /= gcd;
 }
 
+/*
+ * Перебираем строку от конца к началу, складывая значения
+ * цифер, если значение меньше предыдущего, то вычитаем
+ */
 int RomanFraction::toInt(const std::string& roman) {
   static std::map<char, int> intByRoman;
   if (intByRoman.empty()) {
@@ -42,6 +51,11 @@ int RomanFraction::toInt(const std::string& roman) {
   return result;
 }
 
+/*
+ * Делим на значения цифер от большего к меньшему, получившийся
+ * остаток - количество соответствующих цифер. Двойные сочетания
+ * (с вычитанием) считаем как отедельные цифры.
+ */
 std::string RomanFraction::toRoman(int number) {
   static std::map<int, std::string> romanByInt;
   if (romanByInt.empty()) {
